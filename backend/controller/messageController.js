@@ -7,7 +7,7 @@ import { cloudinary } from '../cloudinary.js'
 // @route   POST /api/messages/new-message
 // @access  Private
 
-const saveNewMessageAndUpdateChat = expressAsyncHandler(async (req, res) => {
+const saveNewMessageAndUpdateChat = async (req, res) => {
   try {
     // If image present then save to cloudinary and get url
     if (req.body.image !== '') {
@@ -42,27 +42,31 @@ const saveNewMessageAndUpdateChat = expressAsyncHandler(async (req, res) => {
       error: error.message,
     })
   }
-})
+}
 
 // @desc  get all messages of a chat
 // @route   POST /api/messages/get-all-messages/${chatId}
 // @access  Private
 
-const getAllMessagesOfChat = expressAsyncHandler(async (req, res) => {
-  const messages = await Message.find({ chat: req.params.chatId }).sort({
-    createdAt: 1,
-  })
+const getAllMessagesOfChat = async (req, res) => {
+  try {
+    const messages = await Message.find({ chat: req.params.chatId }).sort({
+      createdAt: 1,
+    })
 
-  if (messages) {
     res.json({
       messages,
       message: 'Message fetched successfully',
       status: true,
     })
-  } else {
-    res.json({ message: 'Error getting messages', status: false })
+  } catch (error) {
+    res.json({
+      message: 'Error sending message',
+      status: false,
+      error: error.message,
+    })
   }
-})
+}
 
 // @desc   clear all unread messages of a chat
 // @route   POST /api/messages/clear-unread-messages

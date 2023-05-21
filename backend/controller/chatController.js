@@ -5,37 +5,37 @@ import expressAsyncHandler from 'express-async-handler'
 // @route   POST /api/chat/create-new-chat
 // @access  Private
 
-const createNewChat = expressAsyncHandler(async (req, res) => {
-  const chat = await Chat.create(req.body)
+const createNewChat = async (req, res) => {
+  try {
+    const chat = await Chat.create(req.body)
 
-  // populate members in saved chat
-  await chat.populate('members')
+    // populate members in saved chat
+    await chat.populate('members')
 
-  if (chat) {
     res.json({ message: 'Chat created successfully', chat, status: true })
-  } else {
-    res.json({ message: 'Error creating chat', status: false })
+  } catch (error) {
+    res.json({ message: error.message, status: false })
   }
-})
+}
 
 // @desc    get all chats of current user
 // @route   GET /api/chat/get-all-chats
 // @access  Private
 
 const getAllChats = expressAsyncHandler(async (req, res) => {
-  const chats = await Chat.find({
-    members: {
-      $in: [req.user._id],
-    },
-  })
-    .populate('members')
-    .populate('lastMessage')
-    .sort({ updatedAt: -1 })
+  try {
+    const chats = await Chat.find({
+      members: {
+        $in: [req.user._id],
+      },
+    })
+      .populate('members')
+      .populate('lastMessage')
+      .sort({ updatedAt: -1 })
 
-  if (chats) {
     res.json({ chats, status: true })
-  } else {
-    res.json({ message: 'Error getting chats', status: false })
+  } catch (error) {
+    res.json({ message: error.message, status: false })
   }
 })
 
