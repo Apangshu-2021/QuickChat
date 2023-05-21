@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@100;200;300;400;500;600;700&family=Montserrat&display=swap');
+
+* {
+  font-family: 'Josefin Sans', sans-serif;
+}
+
+input {
+  height: 40px;
+  border: 1px solid rgb(113, 125, 182);
+  padding-left: 20px;
+}
+
+input:focus {
+  outline: none;
+  border: 1px solid rgb(23, 28, 52);
+}
+
+.outlined-btn {
+  border: 1px solid #4d426d;
+  color: #302550;
+  padding: 10px 20px;
+  height: 40px;
+  text-transform: uppercase;
+}
+
+.contained-btn {
+  background-color: #4d426d;
+  color: white;
+  padding: 5px 20px;
+  height: 40px;
+  text-transform: uppercase;
+}
+
+.truncated {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 20ch;
+}
+
+@media screen and (min-width: 768px) and (max-width: 1026px) {
+  .truncated {
+    max-width: 12ch;
+  }
+}
+
+@media screen and (max-width: 366px) {
+  .truncated {
+    max-width: 12ch;
+  }
+}
+
+/* Related to react-emoji-picker */
+aside.EmojiPickerReact.epr-main {
+  width: 40vw !important;
+}
+
+@media screen and (max-width: 767px) {
+  aside.EmojiPickerReact.epr-main {
+    width: 60vw !important;
+    overflow: auto !important;
+  }
+}
+
+aside.EmojiPickerReact.epr-main:has(input:placeholder-shown) .epr-category-nav {
+  display: none !important;
+}
+
+input[type='file'] {
+  font-size: 1rem;
+}
+
+@media screen and (max-width: 388px) {
+  input[type='file'] {
+    font-size: 0.75rem;
+  }
+}
