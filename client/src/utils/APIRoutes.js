@@ -1,4 +1,4 @@
-const host = 'https://quick-chat-nine.vercel.app'
+const host = 'https://quickchat7231.onrender.com'
 export const registerRoute = `${host}/api/auth/register`
 export const loginRoute = `${host}/api/auth/login`
 export const getUserRoute = `${host}/api/auth/get-current-user`

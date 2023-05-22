@@ -5,7 +5,7 @@ import UsersList from '../components/UsersList'
 import { useSelector } from 'react-redux'
 import { io } from 'socket.io-client'
 // The reson why we're making socket a global variable is because in the useEffect socket is not getting called. We're initilaising the socket in Home.js because we'll send it as a prop to ChatArea.js and UserList.js.
-const socket = io('https://quick-chat-nine.vercel.app')
+const socket = io('https://quickchat7231.onrender.com')
 
 const Home = () => {
   const [searchKey, setSearchKey] = useState('')
