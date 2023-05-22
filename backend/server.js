@@ -7,6 +7,7 @@ import chatRoutes from './routes/chatRoutes.js'
 import messageRoutes from './routes/messageRoutes.js'
 import { createServer } from 'http'
 import { Server } from 'socket.io'
+import path from 'path'
 
 dotenv.config()
 connectDB()
@@ -27,8 +28,7 @@ const server = createServer(app)
 
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:3000',
-    methods: ['GET', 'POST'],
+    origin: '*',
   },
 })
 
@@ -79,6 +79,21 @@ io.on('connection', (socket) => {
 app.use('/api/auth', userRoutes)
 app.use('/api/chat', chatRoutes)
 app.use('/api/messages', messageRoutes)
+
+const __dirname = path.resolve()
+
+if (process.env.NODE_ENV === 'production') {
+  const root = path.join(__dirname, 'client', 'build')
+  app.use(express.static(root))
+
+  app.get('*', (req, res) => {
+    res.sendFile('index.html', { root })
+  })
+} else {
+  app.get('/', (req, res) => {
+    res.send('API is running....')
+  })
+}
 
 const PORT = process.env.PORT
 

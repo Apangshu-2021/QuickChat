@@ -253,12 +253,12 @@ const ChatArea = ({ socket }) => {
       {/* 2nd part chatbox/chat messages */}
       <div className='h-[55vh] overflow-y-auto p-4' id='messages'>
         <div className='flex flex-col gap-2'>
-          {messages.map((message) => {
+          {messages.map((message, index) => {
             const isCurrentUserSender = message.sender === user._id
             return (
               <div
                 className={`flex ${isCurrentUserSender && 'justify-end'}`}
-                key={message._id}
+                key={index}
               >
                 <div className='flex flex-col gap-1 max-w-[30vw] break-all'>
                   <h1
