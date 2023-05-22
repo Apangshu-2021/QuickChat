@@ -14,7 +14,7 @@ import {
 import { getAllChatsAPI } from '../API/chats'
 import { io } from 'socket.io-client'
 
-const socket = io('http://localhost:5000')
+const socket = io('https://quick-chat-nine.vercel.app')
 const ProtectedRoute = ({ children }) => {
   const dispatch = useDispatch()
   const { user } = useSelector((state) => state.userReducer)
