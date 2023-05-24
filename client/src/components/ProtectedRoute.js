@@ -14,7 +14,13 @@ import {
 import { getAllChatsAPI } from '../API/chats'
 import { io } from 'socket.io-client'
 
-const socket = io('https://quickchat7231.onrender.com')
+const host =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:5000'
+    : 'https://quickchat7231.onrender.com'
+
+const socket = io(host)
+
 const ProtectedRoute = ({ children }) => {
   const dispatch = useDispatch()
   const { user } = useSelector((state) => state.userReducer)
@@ -71,7 +77,7 @@ const ProtectedRoute = ({ children }) => {
   }, [])
 
   return (
-    <div className='h-screen w-screen bg-gray-100 p-2'>
+    <div className='h-fit w-screen bg-gray-100 p-2'>
       {/* header */}
       <div className='flex sm:justify-between sm:flex-row flex-col items-center justify-center p-5'>
         <div className='flex items-center gap-1'>

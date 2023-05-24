@@ -78,8 +78,9 @@ const Login = () => {
           onSubmit={(e) => {
             login(e)
           }}
+          className='m-6 w-96'
         >
-          <div className='bg-white shadow-md p-5 flex flex-col gap-5 w-96'>
+          <div className='bg-white shadow-md p-5 flex flex-col gap-5 w-full'>
             <div className='flex gap-2'>
               <i className='ri-message-2-line text-2xl text-primary'></i>
               <h1 className='text-2xl uppercase text-center font-semibold'>
