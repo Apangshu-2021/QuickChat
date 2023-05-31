@@ -11,6 +11,7 @@ import moment from 'moment'
 import { setAllChats } from '../redux/userSlice'
 import store from '../redux/store'
 import EmojiPicker from 'emoji-picker-react'
+import { v4 as uuidv4 } from 'uuid'
 
 // send messages in realtime (without refresh)
 // client(person A) ---> server ---> client(person A, person B),
@@ -54,6 +55,7 @@ const ChatArea = ({ socket }) => {
         members: selectedChat.members.map((mem) => mem._id),
         createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
         read: false,
+        uuid: uuidv4(),
       })
 
       // Send message to server to save in db
@@ -164,8 +166,13 @@ const ChatArea = ({ socket }) => {
       const tempSelectedChat = store.getState().userReducer.selectedChat
 
       // This if condition checks whether the chat area for the message which is sent through socket is open or not.
+      console.log(messages)
       if (tempSelectedChat._id === message.chat) {
-        setMessages((messages) => [...messages, message])
+        setMessages((prevMessages) =>
+          prevMessages.some((msg) => msg.uuid === message.uuid)
+            ? prevMessages
+            : [...prevMessages, message]
+        )
       }
 
       // This if condition checks whether the chat area for the message which is sent through socket is open or not and also checks whether the chat area of the recipent is opened, then only 'clear-unread-messages' will be emitted to both sender and recipent(as members) as a result unread count will be 0, read will be true for all the messages(for both sender and receiver) and also green tick will be shown to the sender message.
