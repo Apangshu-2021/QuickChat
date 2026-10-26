@@ -1,0 +1,138 @@
+# ==============================================================================
+# Docker Compose Configuration for QuickChat Fullstack Stack
+#
+# Architecture:
+# - postgres  : PostgreSQL 16 relational database (port 5432)
+# - backend   : Spring Boot 3.4 REST API & WebSocket server (port 8080)
+# - frontend  : React 18 + Vite SPA served via Nginx reverse proxy (port 3000)
+#
+# Quick Start:
+#   docker compose up --build       # Build images and start all services
+#   docker compose down             # Stop all services
+#   docker compose down -v          # Stop and remove persistent data volumes
+#
+# Environment variables (${VAR}) are automatically loaded from .env in this folder.
+# ==============================================================================
+
+services:
+  # ----------------------------------------------------------------------------
+  # 1. PostgreSQL Database Service
+  # ----------------------------------------------------------------------------
+  postgres:
+    # Use lightweight PostgreSQL 16 based on Alpine Linux
+    image: postgres:16-alpine
+    container_name: quickchat-postgres
+
+    # Automatically restart the container unless explicitly stopped
+    restart: unless-stopped
+
+    # Database initialization credentials (read from .env file)
+    environment:
+      POSTGRES_DB: quickchat
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+    # Map host port 5432 to container port 5432 (allows connecting via DBeaver / pgAdmin)
+    ports:
+      - "5432:5432"
+
+    # Persist database files across container restarts
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    # Health check: pg_isready is an official PostgreSQL utility that checks whether the PostgreSQL server is ready to accept database connections.
+    # -U ${POSTGRES_USER}: The database user / role to connect with (e.g., -U apangshu).
+    # -d quickchat: The specific database name to verify availability for.
+    # Uses ${POSTGRES_USER} since the default 'postgres' role is replaced when POSTGRES_USER is set
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d quickchat" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+    # Connect to the internal shared bridge network
+    networks:
+      - quickchat-network
+
+  # ----------------------------------------------------------------------------
+  # 2. Spring Boot 3 Backend Service
+  # ----------------------------------------------------------------------------
+  backend:
+    # Build container image using the Dockerfile inside ./quickchat-backend
+    build:
+      context: ./quickchat-backend
+      dockerfile: Dockerfile
+    container_name: quickchat-backend
+
+    restart: unless-stopped
+
+    # Wait until PostgreSQL passes its healthcheck before starting Spring Boot
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    # Application configuration passed as environment variables to Spring Boot
+    environment:
+      PORT: 8080
+      DB_HOST: postgres # Resolves to postgres container IP via Docker DNS
+      DB_PORT: 5432
+      DB_NAME: quickchat
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION_MS: ${JWT_EXPIRATION}
+      UPLOAD_DIR: /app/uploads # Directory inside container for avatar/chat uploads
+
+    # Expose Spring Boot port 8080 to host machine
+    ports:
+      - "8080:8080"
+
+    # Persist uploaded images (avatars, attachments) on host via a Docker volume
+    volumes:
+      - backend_uploads:/app/uploads
+
+    networks:
+      - quickchat-network
+
+  # ----------------------------------------------------------------------------
+  # 3. React + Vite Frontend Service (Nginx)
+  # ----------------------------------------------------------------------------
+  frontend:
+    # Build production bundle and package into an Nginx Alpine container
+    build:
+      context: ./quickchat-frontend
+      dockerfile: Dockerfile
+    container_name: quickchat-frontend
+
+    restart: unless-stopped
+
+    # Ensure backend container starts before frontend
+    depends_on:
+      - backend
+
+    # Map host port 3000 to Nginx container port 80 (visit http://localhost:3000)
+    ports:
+      - "3000:80"
+
+    networks:
+      - quickchat-network
+
+# ==============================================================================
+# Networks & Volumes Definitions
+# ==============================================================================
+networks:
+  # Isolated bridge network allowing containers to communicate using service names
+  # (e.g. backend can connect to 'http://postgres:5432' and frontend can proxy to 'http://backend:8080')
+  # Docker creates a private virtual network (called a "bridge network") on your machine and connects the three containers (postgres, backend, and frontend) to it.
+  # Because all three containers share quickchat-network, Docker runs an internal DNS server that maps container names to their IPs
+  # bridge is the standard network type for containers running on the same host machine.
+  # It acts like a software network switch: containers on the bridge can talk to each other and can reach the internet (e.g. to download packages), but they remain isolated from other networks.
+  quickchat-network:
+    driver: bridge
+
+volumes:
+  # Named volume for persistent database tables and records
+  postgres_data:
+
+  # Named volume for user-uploaded profile pictures and chat media files
+  backend_uploads:

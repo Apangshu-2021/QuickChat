@@ -1,0 +1,30 @@
+# Environment Variables & Secrets
+.env
+*.env.local
+
+# Operating System & IDE Files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Backend Build Artifacts
+quickchat-backend/target/
+quickchat-backend/.mvn/wrapper/maven-wrapper.jar
+quickchat-backend/uploads/
+uploads/
+
+# Frontend Build & Dependency Artifacts
+quickchat-frontend/node_modules/
+quickchat-frontend/dist/
+quickchat-frontend/.vite/
+quickchat-frontend/*.log
+quickchat-frontend/npm-debug.log*
+quickchat-frontend/yarn-debug.log*
+quickchat-frontend/yarn-error.log*
+
+# Logs & Database volumes
+*.log
+pg_data/

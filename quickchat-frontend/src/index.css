@@ -1,0 +1,122 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600&display=swap');
+
+@theme {
+  --color-primary: #4d426d;
+}
+
+* {
+  font-family: 'Josefin Sans', sans-serif;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: #f7f8fc;
+  color: #1e1e24;
+}
+
+input {
+  height: 40px;
+  border: 1px solid rgb(113, 125, 182);
+  padding-left: 16px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+input:focus {
+  outline: none;
+  border: 1px solid rgb(23, 28, 52);
+  box-shadow: 0 0 0 2px rgba(77, 66, 109, 0.15);
+}
+
+.bg-primary {
+  background-color: #4d426d;
+}
+
+.text-primary {
+  color: #4d426d;
+}
+
+.border-primary {
+  border-color: #4d426d;
+}
+
+.outlined-btn {
+  border: 1px solid #4d426d;
+  color: #302550;
+  padding: 8px 20px;
+  height: 40px;
+  text-transform: uppercase;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.outlined-btn:hover {
+  background-color: rgba(77, 66, 109, 0.08);
+}
+
+.contained-btn {
+  background-color: #4d426d;
+  color: white;
+  padding: 8px 20px;
+  height: 40px;
+  text-transform: uppercase;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.contained-btn:hover {
+  background-color: #3d3456;
+  box-shadow: 0 4px 12px rgba(77, 66, 109, 0.25);
+}
+
+.truncated {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 20ch;
+}
+
+@media screen and (min-width: 768px) and (max-width: 1026px) {
+  .truncated {
+    max-width: 12ch;
+  }
+}
+
+@media screen and (max-width: 366px) {
+  .truncated {
+    max-width: 12ch;
+  }
+}
+
+/* Related to react-emoji-picker */
+aside.EmojiPickerReact.epr-main {
+  width: 40vw !important;
+  max-width: 380px !important;
+}
+
+@media screen and (max-width: 767px) {
+  aside.EmojiPickerReact.epr-main {
+    width: 80vw !important;
+    overflow: auto !important;
+  }
+}
+
+aside.EmojiPickerReact.epr-main:has(input:placeholder-shown) .epr-category-nav {
+  display: none !important;
+}
+
+input[type='file'] {
+  font-size: 1rem;
+}
+
+@media screen and (max-width: 388px) {
+  input[type='file'] {
+    font-size: 0.75rem;
+  }
+}
